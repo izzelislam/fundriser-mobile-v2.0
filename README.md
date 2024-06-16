@@ -1,8 +1,11 @@
 # fundriser
 
-A new Flutter project.
+aplikasi pencatatan donasi yang terintegrasi dengangan halaman admin.
 
-## Preview App
+### link asset
+figma -> https://www.figma.com/design/qkoBXPzSqTMlD0KLofTRQP/Donasi-v2?node-id=0-1&t=AMP0GOpB83KCW2LT-1
+
+### Preview App
 
 <img src="./demo/1.jpg" alt="drawing" width="200"/><img src="./demo/2.jpg" alt="drawing" width="200"/><img src="./demo/3.jpg" alt="drawing" width="200"/>
 
