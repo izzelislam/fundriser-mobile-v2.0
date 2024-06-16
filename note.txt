@@ -1,0 +1,9 @@
+Aplikasi ini merupakan pengembangan atau update dari versi sebelumnya (v1.0),
+aplikasi ini bebas di gunakan oleh siapapun dan dimanapun oleh lembaga komersial dan non komersial 
+secara gratis degan syarat dan ketentuan yang berlaku diantaranya :
+
+1. penguna dilarang mendistribusiakn ulang secara komersial
+2. menyalahgunakan aplikasi seperti halnya penipuan/scam dll
+
+jika ada kesulitan tentang pengunaan aplikasi atau ingin menambah fitur dari aplikasi secara custom
+bisa hubunggi tim developer melalui email bangfkr002@gmail.com
