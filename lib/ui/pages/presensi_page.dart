@@ -9,7 +9,7 @@ class PresensiPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Presensi"),
+        title: const Text("Presensi"),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
@@ -21,9 +21,9 @@ class PresensiPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width - 90,
-                      child: CustomInput(
+                      child: const CustomInput(
                         isLabel: false,
                         hintText: "Cari absensi",
                       ),
@@ -71,7 +71,7 @@ class PresentCard extends StatelessWidget {
           )
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: 14,
             vertical: 8      
           ),
@@ -109,7 +109,7 @@ class PresentCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 2),
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width - 230,
                     child: Text("12 januari 2025", style: grayTextStyle.copyWith(
                       fontSize: 10,

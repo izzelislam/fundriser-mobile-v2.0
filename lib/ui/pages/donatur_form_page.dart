@@ -10,43 +10,43 @@ class DonaturFormPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bauat Donatur"),
+        title: const Text("Bauat Donatur"),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
             Column(
               children: [
-                CustomInput(
+                const CustomInput(
                   label: "Nama Donatur",
                   hintText: "nama donatur",
                 ),
-                CustomInput(
+                const CustomInput(
                   label: "Nomor Telepon",
                   hintText: "nomor telepon",
                 ),
-                CustomInput(
+                const CustomInput(
                   label: "Provinsi",
                   hintText: "provinsi",
                 ),
-                CustomInput(
+                const CustomInput(
                   label: "Kabupaten",
                   hintText: "kabupaten",
                 ),
-                CustomInput(
+                const CustomInput(
                   label: "Kecamatan",
                   hintText: "kecamatan",
                 ),
-                CustomInput(
+                const CustomInput(
                   label: "Alamat Lengkap",
                   hintText: "alamat lengkap",
                 ),
-                CustomInput(
+                const CustomInput(
                   label: "Latitude",
                   hintText: "latitude",
                 ),
-                CustomInput(
+                const CustomInput(
                   label: "Longitude",
                   hintText: "longitude",
                 ),
@@ -54,7 +54,7 @@ class DonaturFormPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(bottom: 15),
+                      margin: const EdgeInsets.only(bottom: 15),
                       width: 120,
                       height: 30,
                       child: TextButton(

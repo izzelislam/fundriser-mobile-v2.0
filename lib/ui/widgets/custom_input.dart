@@ -10,6 +10,7 @@ class CustomInput extends StatelessWidget {
   final String? hintText;
   final Function(String)? onFieldSubmitted;
   final bool isLabel;
+  final bool isReadOnly;
 
   const CustomInput({
     super.key,
@@ -20,7 +21,8 @@ class CustomInput extends StatelessWidget {
     this.keyboardType,
     this.hintText,
     this.onFieldSubmitted,
-    this.isLabel = true
+    this.isLabel = true,
+    this.isReadOnly = false
   });
 
   @override
@@ -32,6 +34,7 @@ class CustomInput extends StatelessWidget {
         // Text(label?? '', style: grayTextStyle.copyWith(fontSize: 13, fontWeight: FontWeight.w600)),
         const SizedBox(height: 2,),
         TextField(
+          readOnly: isReadOnly,
           obscureText: obscureText,
           controller: controller,
           keyboardType: keyboardType,
@@ -40,13 +43,15 @@ class CustomInput extends StatelessWidget {
           style: TextStyle(
             color: darkGrayColor,
             fontSize: 14,
-            fontWeight: FontWeight.w400
+            fontWeight: FontWeight.w400,
           ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: thinGrayTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w400),
             isDense: true,
             contentPadding: const EdgeInsets.all(16),
+            filled: isReadOnly,
+            fillColor: grayColor.withOpacity(0.1),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(color: thinGrayColor)

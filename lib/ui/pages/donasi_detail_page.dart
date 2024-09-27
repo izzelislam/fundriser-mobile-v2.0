@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:fundriser/model/donation_data_model.dart';
+import 'package:fundriser/shared/method.dart';
 import 'package:fundriser/shared/theme.dart';
 import 'package:fundriser/ui/widgets/custom_button.dart';
 import 'package:lottie/lottie.dart';
 
 class DonasiDetailPage extends StatelessWidget {
-  const DonasiDetailPage({super.key});
-
   @override
   Widget build(BuildContext context) {
+
+    final DonationDataModel? data = ModalRoute.of(context)!.settings.arguments as DonationDataModel?;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Detail Donasi", style: TextStyle(color: whiteColor),),
@@ -25,7 +28,7 @@ class DonasiDetailPage extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.4,
                 decoration: BoxDecoration(
                   color: greenColor,
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(130),
                     bottomRight: Radius.circular(130)
                   )
@@ -82,34 +85,34 @@ class DonasiDetailPage extends StatelessWidget {
                       fontWeight: FontWeight.w700
                     )),
                     const SizedBox(height: 5),
-                    Text("Senin 12 januari 2025 11:32", style: grayTextStyle.copyWith(
+                    Text(stringToDateTime(data!.createdAt ?? '0'), style: grayTextStyle.copyWith(
                       fontSize: 12,
                       fontWeight: FontWeight.w400
                     )),
                     const SizedBox(height: 20),
-                    Text("Rp. 120.500", style: darkGrayTextStyle700.copyWith(
+                    Text(numberToIdr(int.parse(data.amount ?? '0')), style: darkGrayTextStyle700.copyWith(
                       fontSize: 26,
                     )),
                     const SizedBox(height: 20),
-                    const ListItem(
+                    ListItem(
                       title: "Donatur",
-                      subtitle: "Bpk, H. Joko Suwarno",
+                      subtitle: data.donor?.name ?? '-',
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "Jenis Donasi",
-                      subtitle: "Shodaqoh",
+                      subtitle: data.type ?? '-',
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "No Kwitansi",
-                      subtitle: "189273812783672",
+                      subtitle: data.receiptUid ?? '-',
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "Alamat",
-                      subtitle: "Jl Kyai kasan rejo no 10, depan sd magersari wetan Mertoyudan magelang jawatenggah",
+                      subtitle: data.donor?.address ?? '-',
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "catatan",
-                      subtitle: "Jl Kyai kasan rejo no 10, depan sd magersari wetan Mertoyudan magelang jawatenggah",
+                      subtitle: data.note ?? '-',
                     ),
 
                   ],
@@ -144,7 +147,7 @@ class ListItem extends StatelessWidget {
             fontWeight: FontWeight.w400
           ),),
           const Spacer(),
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width * 0.5,
             child: Text(subtitle ?? "-", style: darkGrayTextStyle.copyWith(
               fontSize: 12,

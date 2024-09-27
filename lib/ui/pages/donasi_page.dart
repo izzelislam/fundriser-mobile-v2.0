@@ -1,27 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fundriser/bloc/donation/donation_bloc.dart';
+import 'package:fundriser/model/donation_data_model.dart';
+import 'package:fundriser/shared/method.dart';
 import 'package:fundriser/shared/theme.dart';
 import 'package:fundriser/ui/widgets/custom_input.dart';
 
-class DonasiPage extends StatelessWidget {
+class DonasiPage extends StatefulWidget {
   const DonasiPage({super.key});
+
+  @override
+  State<DonasiPage> createState() => _DonasiPageState();
+}
+
+class _DonasiPageState extends State<DonasiPage> {
+
+  List<DonationDataModel> donations = <DonationDataModel>[];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Donasi"),
+        title: const Text("Donasi"),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 20
         ),
         child: ListView(
           children: [
             Row(
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width - 90,
-                  child: CustomInput(
+                  child: const CustomInput(
                     isLabel: false,
                     hintText: "Cari berdasarkan no kwitansi",
                   ),
@@ -31,24 +43,34 @@ class DonasiPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 15,),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
-            const DonationCard(),
+            
+            BlocProvider(
+              create: (context) => DonationBloc()..add(const GetAllDonation()),
+              child: BlocBuilder<DonationBloc, DonationState>(
+                builder: (context, state) {
+
+                  if (state is DonationLoading){
+                    return Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(color: blueColor,),
+                      ),
+                    );
+                  }
+
+                  if (state is DonationAllSuccess) {
+                    donations = state.data;
+                    return Column(
+                      children: donations.map((e) => DonationCard(data: e)).toList(),
+                    );
+                  }
+
+                  return Container();
+                },
+              ),
+            ),
+
           ],  
         ),
       ),
@@ -58,14 +80,17 @@ class DonasiPage extends StatelessWidget {
 
 
 class DonationCard extends StatelessWidget {
+  final DonationDataModel data;
+
   const DonationCard({
     super.key,
+    required this.data
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, "/donasi-detail"),
+      onTap: () => Navigator.pushNamed(context, "/donasi-detail" , arguments: data),
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
         width: double.infinity,
@@ -78,7 +103,7 @@ class DonationCard extends StatelessWidget {
           )
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: 14,
             vertical: 8      
           ),
@@ -114,19 +139,19 @@ class DonationCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 2),
-                  Text("Bpk, H Joko Suwarno", style: darkGrayTextStyle.copyWith(
+                  Text(data.donor?.name ?? 'Unknown Donor', style: darkGrayTextStyle.copyWith(
                     fontSize: 12,
                     fontWeight: FontWeight.w700
                   )),
                   const SizedBox(width: 2),
-                  Text("12/Januari/2025", style: thinGrayTextStyle.copyWith(
+                  Text(stringToDate(data.createdAt ?? ''), style: thinGrayTextStyle.copyWith(
                     fontSize: 12,
                     fontWeight: FontWeight.w700
                   ),),
                 ],
               ),
               const Spacer(),
-              Text("Rp. 250.000", style: darkGrayTextStyle700.copyWith(
+              Text(numberToIdr(int.parse(data.amount ?? '0')), style: darkGrayTextStyle700.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w500
               ))

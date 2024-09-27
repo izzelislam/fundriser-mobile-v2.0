@@ -8,17 +8,17 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Tentang Aplikasi"),
+        title: const Text("Tentang Aplikasi"),
       ),
       body: Padding(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           top: 20, left: 20, right: 20
         ),
         child: Column(
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage("assets/img_dumy.png"),
+              backgroundImage: const AssetImage("assets/img_dumy.png"),
               backgroundColor: whiteColor,
             ),
             const SizedBox(height: 20),

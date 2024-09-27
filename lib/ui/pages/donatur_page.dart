@@ -9,10 +9,10 @@ class DonaturPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Donatur"),
+        title: const Text("Donatur"),
       ),
       body: Padding(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: 20,
           right: 20
         ),
@@ -22,9 +22,9 @@ class DonaturPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width - 90,
-                      child: CustomInput(
+                      child: const CustomInput(
                         isLabel: false,
                         hintText: "Cari berdasarkan no kwitansi",
                       ),
@@ -71,7 +71,7 @@ class DonaturCard extends StatelessWidget {
           )
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: 14,
             vertical: 8      
           ),
@@ -114,7 +114,7 @@ class DonaturCard extends StatelessWidget {
                     fontWeight: FontWeight.w700
                   )),
                   const SizedBox(height: 2),
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width - 230,
                     child: Text("Magelang jawatenggah jl hj kasan rejo no 6 toko bapak joko narman", style: grayTextStyle.copyWith(
                       fontSize: 10,

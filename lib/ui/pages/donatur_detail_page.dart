@@ -24,7 +24,7 @@ class DonaturDetailPage extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.4,
                 decoration: BoxDecoration(
                   color: greenColor,
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(130),
                     bottomRight: Radius.circular(130)
                   )
@@ -44,7 +44,7 @@ class DonaturDetailPage extends StatelessWidget {
                       right: 24,
                     ),
                     child: Container(
-                      margin: EdgeInsets.only(bottom: 15),
+                      margin: const EdgeInsets.only(bottom: 15),
                       width: 120,
                       height: 35,
                       child: TextButton(
@@ -193,7 +193,7 @@ class ListItem extends StatelessWidget {
             fontWeight: FontWeight.w400
           ),),
           const Spacer(),
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width * 0.5,
             child: Text(subtitle ?? "-", style: darkGrayTextStyle.copyWith(
               fontSize: 12,

@@ -9,15 +9,15 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile"),
+        title: const Text("Profile"),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
             Column(
               children: [
-                ProfileSection(),
+                const ProfileSection(),
                 const SizedBox(height: 46),
                 GestureDetector(
                   onTap: (){
@@ -99,7 +99,7 @@ class ProfileSection extends StatelessWidget {
         )
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 15
         ),
         child: Row(
@@ -114,7 +114,7 @@ class ProfileSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   width: 230,
                   child: Text("Muttafakur Al aio Muttafakur Al aio Muttafakur Al aio", style: grayTextStyle.copyWith(
                     fontSize: 18,

@@ -7,12 +7,12 @@ class PermitPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Perizinan"),
+        title: const Text("Perizinan"),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView(
-          children: [
+          children: const [
             Column(
               children: [
                 

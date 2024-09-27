@@ -9,15 +9,15 @@ class ChangePasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Ubah Password"),
+        title: const Text("Ubah Password"),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            CustomInput(label: "Password Lama", obscureText: true,),
-            CustomInput(label: "Password Baru", obscureText: true,),
-            CustomInput(label: "Konfirmasi Password Baru", obscureText: true,),
+            const CustomInput(label: "Password Lama", obscureText: true,),
+            const CustomInput(label: "Password Baru", obscureText: true,),
+            const CustomInput(label: "Konfirmasi Password Baru", obscureText: true,),
             const SizedBox(height: 20),
             CustomButton(title: "Ubah Password", onPressed: () {},)
           ],
