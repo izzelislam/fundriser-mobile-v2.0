@@ -43,6 +43,55 @@ class AuthService{
     }
   }
 
+  Future changePassword(String oldPassword, String newPassword, String confirmPassword) async {
+    try {
+      final token = await getCredential();
+      Uri url = Uri.parse('$baseUrl/update-password');
+
+      final headers = {
+        'Authorization': 'Bearer $token',
+      };
+
+      final body = {
+        'old_password': oldPassword,
+        'password': newPassword,
+        'password_confirmation': confirmPassword
+      };
+
+      final res = await http.post(url, headers: headers, body: body);
+      if (res.statusCode == 200) {
+        return jsonDecode(res.body)['message'];
+      }else{
+        throw jsonDecode(res.body)['error'] ?? jsonDecode(res.body)['error']["password"];
+      }
+
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future logOut() async {
+    try {
+      
+      final token = await getCredential();
+      Uri url = Uri.parse('$baseUrl/logout');
+      final headers = {
+        'Authorization': 'Bearer $token',
+      };
+
+      final res = await http.post(url, headers: headers);
+      if (res.statusCode == 200) {
+        await deleteCredential();
+        return true;
+      }else{
+        throw 'Gagal Logout';
+      }
+
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> deleteCredential() async {
     try {
       const storage = FlutterSecureStorage();

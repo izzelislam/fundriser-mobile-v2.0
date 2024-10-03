@@ -14,55 +14,115 @@ class DonasiPage extends StatefulWidget {
 }
 
 class _DonasiPageState extends State<DonasiPage> {
+  int currentPage = 2;
+  bool loadingMore = false;
 
   List<DonationDataModel> donations = <DonationDataModel>[];
+  TextEditingController searchField = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+
+    void handleSearch (String param){
+      context.read<DonationBloc>().add( SearchDonation(param));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Donasi"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.pushNamed(context, "/donasi-form"),
+        backgroundColor: blueColor,
+        child: Image.asset(
+          "assets/ic_add.png",
+          width: 30,
+          height: 30,
         ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView(
           children: [
             Row(
               children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 90,
-                  child: const CustomInput(
-                    isLabel: false,
-                    hintText: "Cari berdasarkan no kwitansi",
+                BlocListener<DonationBloc, DonationState>(
+                  listener: (context, state) {
+                    
+                    if (state is DonationAllSuccess) {
+                      setState(() {
+                        if (state.data.length <= 0){
+                          donations = [];
+                        }else{
+                          donations = List.from(state.data);
+                        }
+                      });
+                    }
+
+                  },
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 90,
+                    child: CustomInput(
+                      isLabel: false,
+                      hintText: "Cari berdasarkan no kwitansi",
+                      controller: searchField,
+                      onFieldSubmitted: (param){
+                        handleSearch(param);
+                      },
+                    ),
                   ),
                 ),
                 const Spacer(),
-                Image.asset("assets/ic_short.png", width: 33, height: 33,)
+                Image.asset(
+                  "assets/ic_short.png",
+                  width: 33,
+                  height: 33,
+                )
               ],
             ),
-            const SizedBox(height: 15,),
-            
+            const SizedBox(
+              height: 15,
+            ),
             BlocProvider(
               create: (context) => DonationBloc()..add(const GetAllDonation()),
               child: BlocBuilder<DonationBloc, DonationState>(
                 builder: (context, state) {
-
-                  if (state is DonationLoading){
+                  if (state is DonationLoading) {
                     return Center(
                       child: SizedBox(
                         width: 24,
                         height: 24,
-                        child: CircularProgressIndicator(color: blueColor,),
+                        child: CircularProgressIndicator(
+                          color: blueColor,
+                        ),
                       ),
                     );
                   }
 
                   if (state is DonationAllSuccess) {
-                    donations = state.data;
-                    return Column(
-                      children: donations.map((e) => DonationCard(data: e)).toList(),
+                    if (state.data.isNotEmpty) {
+                      donations = state.data;
+                      return Column(
+                        children:
+                            donations.map((e) => DonationCard(data: e)).toList(),
+                      );
+                    }else{
+                      return Center(
+                        child: Text("Donasi Kosong", style: thinGrayTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.w700),),
+                      );
+                    }
+                  }
+
+                  if (state is DonationLoading) {
+                    return Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: blueColor,
+                          strokeWidth: 5,
+                        ),
+                      ),
                     );
                   }
 
@@ -70,95 +130,140 @@ class _DonasiPageState extends State<DonasiPage> {
                 },
               ),
             ),
+            BlocListener<DonationBloc, DonationState>(
+              listener: (context, state) {
+                if (state is DonationAllSuccess) {
+                  setState(() {
+                    currentPage += 1;
+                    loadingMore = false;
+                  });
+                  if (state.data.length > 0) {
+                    setState(() {
+                      donations.addAll(state.data);
+                    });
+                  }
+                }
 
-          ],  
+                if (state is DonationLoading) {
+                  setState(() {
+                    loadingMore = true;
+                  });
+                }
+
+                if (state is DonationFailed) {
+                  setState(() {
+                    loadingMore = false;
+                  });
+                }
+              },
+              child: Center(
+                child: TextButton(
+                    onPressed: () => {
+                          context
+                              .read<DonationBloc>()
+                              .add(GetAllDonation(page: currentPage.toString()))
+                        },
+                    child: loadingMore
+                        ? SizedBox(
+                            width: 10,
+                            height: 10,
+                            child: CircularProgressIndicator(
+                                color: blueColor, strokeWidth: 1.5),
+                          )
+                        : Text(
+                            "lebih banyak",
+                            style: blueTextStyle.copyWith(
+                                fontSize: 12, fontWeight: FontWeight.w700),
+                          )),
+              ),
+            )
+          ],
         ),
       ),
     );
   }
 }
 
-
 class DonationCard extends StatelessWidget {
   final DonationDataModel data;
 
-  const DonationCard({
-    super.key,
-    required this.data
-  });
+  const DonationCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, "/donasi-detail" , arguments: data),
+      onTap: () =>
+          Navigator.pushNamed(context, "/donasi-detail", arguments: data),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 15),
-        width: double.infinity,
-        height: 65,
-        decoration: BoxDecoration(
-          color: whiteColor,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: thinGrayColor
-          )
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 8      
-          ),
-          child: Row(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 37,
-                    height: 37,
-                    decoration: BoxDecoration(
-                      color: slateColor,
-                      borderRadius: BorderRadius.circular(50)
+          margin: const EdgeInsets.only(bottom: 15),
+          width: double.infinity,
+          height: 65,
+          decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: thinGrayColor)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                          color: slateColor,
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Center(
+                        child: Image.asset(
+                          "assets/ic_person_placeholder.png",
+                          width: 28,
+                          height: 28,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Donasi Dari",
+                          style: grayTextStyle.copyWith(
+                              fontSize: 12, fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(width: 5),
+                        Image.asset(
+                          "assets/ic_badge_check.png",
+                          width: 14,
+                          height: 14,
+                        ),
+                      ],
                     ),
-                    child: Center(
-                      child: Image.asset("assets/ic_person_placeholder.png", width: 28, height: 28,),
+                    const SizedBox(height: 2),
+                    Text(data.donor?.name ?? 'Unknown Donor',
+                        style: darkGrayTextStyle.copyWith(
+                            fontSize: 12, fontWeight: FontWeight.w700)),
+                    const SizedBox(width: 2),
+                    Text(
+                      stringToDate(data.createdAt ?? ''),
+                      style: thinGrayTextStyle.copyWith(
+                          fontSize: 12, fontWeight: FontWeight.w700),
                     ),
-                  )
-                ],
-              ),
-              const SizedBox(width: 8,),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text("Donasi Dari", style: grayTextStyle.copyWith(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700
-                      ),),
-                      const SizedBox(width: 5),
-                      Image.asset("assets/ic_badge_check.png", width: 14, height: 14,),
-                    ],
-                  ),
-                  const SizedBox(height: 2),
-                  Text(data.donor?.name ?? 'Unknown Donor', style: darkGrayTextStyle.copyWith(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700
-                  )),
-                  const SizedBox(width: 2),
-                  Text(stringToDate(data.createdAt ?? ''), style: thinGrayTextStyle.copyWith(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700
-                  ),),
-                ],
-              ),
-              const Spacer(),
-              Text(numberToIdr(int.parse(data.amount ?? '0')), style: darkGrayTextStyle700.copyWith(
-                fontSize: 14,
-                fontWeight: FontWeight.w500
-              ))
-            ],
-          ),
-        )
-      ),
+                  ],
+                ),
+                const Spacer(),
+                Text(numberToIdr(int.parse(data.amount ?? '0')),
+                    style: darkGrayTextStyle700.copyWith(
+                        fontSize: 14, fontWeight: FontWeight.w500))
+              ],
+            ),
+          )),
     );
   }
 }

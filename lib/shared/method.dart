@@ -43,3 +43,35 @@ void customSnackbar(BuildContext context, String message) {
     icon: const Icon(Icons.error, color:Colors.white)
   ).show(context);
 }
+
+void successSnackbar(BuildContext context, String message) {
+  Flushbar(
+    flushbarPosition: FlushbarPosition.TOP,
+    backgroundColor: greenColor,
+    message: message,
+    duration: const Duration(seconds: 3),
+    icon: const Icon(Icons.check, color:Colors.white)
+  ).show(context);
+}
+
+// parse date from 2024-10-02 13:21:18 to 12 januari 2024
+String parseDate2(String param) {
+  DateTime now = DateTime.parse(param);
+  String date = DateFormat('d MMMM yyyy').format(now);
+  return date;
+}
+
+// parse time from 2024-10-02 13:21:18 to 13:21
+String parseTime2(String param) {
+  DateTime now = DateTime.parse(param);
+  String date = DateFormat('HH:mm').format(now);
+  return date;
+}
+
+
+// ge tcurrent month number 2 digits
+String getCurrentMonthNumber() {
+  DateTime now = DateTime.now();
+  String month = DateFormat('MM').format(now);
+  return month;
+}

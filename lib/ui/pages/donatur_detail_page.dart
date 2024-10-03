@@ -1,12 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:fundriser/model/donatur/donatur_data_model.dart';
+import 'package:fundriser/shared/method.dart';
 import 'package:fundriser/shared/theme.dart';
 import 'package:fundriser/ui/widgets/custom_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DonaturDetailPage extends StatelessWidget {
-  const DonaturDetailPage({super.key});
+ const DonaturDetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    final DonaturDataModel? data = ModalRoute.of(context)!.settings.arguments as DonaturDataModel?;
+
+
+    Future<void> launchMap() async {
+      final lat = data!.lat;
+      final long = data.lng;
+
+      Uri url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$long');
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
+      } else {
+        throw 'Could not launch $url';
+      }
+    }
+    
     return Scaffold(
       appBar: AppBar(
         title: Text("Detail Donatur", style: TextStyle(color: whiteColor),),
@@ -55,7 +74,7 @@ class DonaturDetailPage extends StatelessWidget {
                             side: BorderSide(color: blueColor)
                           )
                         ),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => launchMap(),
                         child: Text("Lihat di map", style: blueTextStyle.copyWith(
                           fontSize: 12,
                           fontWeight: FontWeight.w600
@@ -68,9 +87,9 @@ class DonaturDetailPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: CustomButton(
-                  title: "Kembali Ke Home",
+                  title: "Kembali",
                   onPressed: (){
-                    Navigator.pushNamed(context, "/home");
+                    Navigator.pop(context);
                   },
                 ),
               ),
@@ -115,7 +134,7 @@ class DonaturDetailPage extends StatelessWidget {
                               fontWeight: FontWeight.w400
                             )),
                             const SizedBox(height: 5),
-                            Text("Rp. 12.500.450", style: darkGrayTextStyle.copyWith(
+                            Text(numberToIdr(int.parse(data?.donationSumAmount ?? '0')), style: darkGrayTextStyle.copyWith(
                               fontSize: 18,
                               fontWeight: FontWeight.w700
                             )),
@@ -125,41 +144,41 @@ class DonaturDetailPage extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 30),
-                    const ListItem(
+                    ListItem(
                       title: "Donatur",
-                      subtitle: "Bpk, H. Joko Suwarno",
+                      subtitle: data?.name,
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "Kode",
-                      subtitle: "DNR-187281",
+                      subtitle: data?.uuid,
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "Provinsi",
-                      subtitle: "Jawatenggah",
+                      subtitle: data?.province?.name,
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "Kabupaten",
-                      subtitle: "Magelang",
+                      subtitle: data?.regency?.name,
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "Kecamatan",
-                      subtitle: "Mertoyudan",
+                      subtitle: data?.district?.name,
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "Latitude",
-                      subtitle: "-7.500000",
+                      subtitle: data?.lat,
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "Longitude",
-                      subtitle: "110.000000",
+                      subtitle: data?.lng,
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "Tagl. Bergabung",
-                      subtitle: "Senin 12 januari 2025 11:32",
+                      subtitle: stringToDateTime(data?.createdAt.toString() ?? ""),
                     ),
-                    const ListItem(
+                    ListItem(
                       title: "Alamat",
-                      subtitle: "Jl Kyai kasan rejo no 10, depan sd magersari wetan Mertoyudan magelang jawatenggah",
+                      subtitle: data?.address,
                     ),
                   ],
                 )

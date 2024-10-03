@@ -16,3 +16,16 @@ class AuthLogin extends AuthEvent {
 }
 
 class AuthGetProfile extends AuthEvent {}
+
+class AuthLogout extends AuthEvent {}
+
+class AuthUpdatePassword extends AuthEvent {
+  final String oldPassword;
+  final String newPassword;
+  final String confirmPassword;
+  const AuthUpdatePassword(this.oldPassword, this.newPassword, this.confirmPassword);
+
+  @override
+  List<Object> get props => [oldPassword, newPassword, confirmPassword];
+}
+

@@ -1,3 +1,4 @@
+import 'package:fundriser/model/danation/donation_form_model.dart';
 import 'package:fundriser/model/donation_data_model.dart';
 import 'package:fundriser/model/total_donation_model.dart';
 import 'package:fundriser/service/auth_service.dart';
@@ -43,6 +44,48 @@ class DonationService {
 
         if (res.statusCode == 200) {
           return List<DonationDataModel>.from(jsonDecode(res.body)["data"]["data"].map((x) => DonationDataModel.fromJson(x)));
+        }else{
+          throw 'Gagal Get Donation Data';
+        }
+      } catch (e) {
+        rethrow;
+      }
+    }
+
+    Future createDonation(DonationFormModel data) async {
+      try {
+        final token = await AuthService().getCredential();
+        Uri url = Uri.parse('$baseUrl/donations');
+
+        final headers = {
+          'Authorization': 'Bearer $token',
+        };
+
+        final res = await http.post(url, headers: headers, body: data.toJson());
+        if (res.statusCode == 200) {
+          return DonationDataModel.fromJson(jsonDecode(res.body)["data"]);
+        }else{
+          throw jsonDecode(res.body)["message"];
+        }
+
+      } catch (e) {
+        rethrow;
+      }
+    }
+
+     Future<List<DonationDataModel>> searchDonation(String q ) async {
+      try {
+        final token = await AuthService().getCredential();
+        Uri url = Uri.parse('$baseUrl/donations/search?q=$q');
+
+        final headers = {
+          'Authorization': 'Bearer $token',
+        };
+
+        final res = await http.get(url, headers: headers);
+
+        if (res.statusCode == 200) {
+          return List<DonationDataModel>.from(jsonDecode(res.body)["data"].map((x) => DonationDataModel.fromJson(x)));
         }else{
           throw 'Gagal Get Donation Data';
         }

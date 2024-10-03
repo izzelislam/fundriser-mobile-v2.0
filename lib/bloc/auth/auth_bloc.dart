@@ -31,6 +31,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthFailed(e.toString()));
       }
     });
+
+    on<AuthLogout>((event, emit) async {
+      try {
+        emit(AuthLoading());
+        await AuthService().logOut();
+        emit(AuthInitial());
+      } catch (e) {
+        emit(AuthFailed(e.toString()));
+      }
+    });
+
+    on<AuthUpdatePassword>((event, emit) async {
+      try {
+        emit(AuthLoading());
+        await AuthService().changePassword(event.oldPassword, event.newPassword, event.confirmPassword);
+         ProfileModel profile = await AuthService().getProfile();
+        emit(AuthSuccess(profile));
+      } catch (e) {
+        emit(AuthFailed(e.toString()));
+      }
+    });
   }
 
 }

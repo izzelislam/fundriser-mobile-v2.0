@@ -1,6 +1,5 @@
 class DonationDataModel {
     final int? id;
-    final String? donorId;
     final String? receiptUid;
     final String? recipient;
     final String? type;
@@ -12,7 +11,6 @@ class DonationDataModel {
 
     DonationDataModel({
         this.id,
-        this.donorId,
         this.receiptUid,
         this.recipient,
         this.type,
@@ -25,7 +23,6 @@ class DonationDataModel {
 
     factory DonationDataModel.fromJson(Map<String, dynamic> json) => DonationDataModel(
         id: json["id"],
-        donorId: json["donor_id"],
         receiptUid: json["receipt_uid"],
         recipient: json["recipient"],
         type: json["type"],
@@ -38,7 +35,6 @@ class DonationDataModel {
 
     Map<String, dynamic> toJson() => {
         "id": id,
-        "donor_id": donorId,
         "receipt_uid": receiptUid,
         "recipient": recipient,
         "type": type,

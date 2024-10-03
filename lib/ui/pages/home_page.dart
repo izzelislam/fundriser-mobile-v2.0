@@ -1,11 +1,14 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_pro_barcode_scanner/flutter_pro_barcode_scanner.dart';
 import 'package:fundriser/bloc/auth/auth_bloc.dart';
 import 'package:fundriser/bloc/content/content_bloc.dart';
 import 'package:fundriser/bloc/donation/donation_bloc.dart';
 import 'package:fundriser/bloc/donatur/donatur_bloc.dart';
+import 'package:fundriser/main.dart';
 import 'package:fundriser/model/content_data_model.dart';
 import 'package:fundriser/model/donation_data_model.dart';
 import 'package:fundriser/shared/method.dart';
@@ -13,8 +16,57 @@ import 'package:fundriser/shared/theme.dart';
 import 'package:fundriser/ui/widgets/custom_button.dart';
 import 'package:fundriser/ui/widgets/custom_input.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeFirebaseMessaging();
+  }
+
+  Future<void> _initializeFirebaseMessaging() async {
+    FirebaseMessaging.instance.getToken().then((token) {
+      // print("FCM Token: $token");
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // print('Got a message whilst in the foreground!');
+
+      if (message.notification != null) {
+        _showForegroundNotification(message.notification!);
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // Handle the message when the app is opened from a notification
+      // print('A new onMessageOpenedApp event was published!');
+    });
+  }
+  void _showForegroundNotification(RemoteNotification notification) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'your_channel_id',
+      'your_channel_name',
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+    );
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      notification.title,
+      notification.body,
+      platformChannelSpecifics,
+      payload: 'item x',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +95,10 @@ class HomePage extends StatelessWidget {
                           padding: const EdgeInsets.all(8),
                           child: Row(
                             children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.network(
-                                    state.data.imageUrl ?? 'Guest',
-                                    width: 28,
-                                    height: 28,
-                                  )),
+                              CircleAvatar(
+                                radius: 15,
+                                backgroundImage: NetworkImage( state.data.imageUrl ?? 'Guest'),
+                              ),
                               const SizedBox(
                                 width: 8,
                               ),
@@ -220,12 +269,33 @@ class HomePage extends StatelessWidget {
                               DonationBloc()..add(GetAllDonation()),
                           child: BlocBuilder<DonationBloc, DonationState>(
                             builder: (context, state) {
-                              if (state is DonationAllSuccess) {
-                                return Column(
-                                  children: state.data
-                                      .map((e) => DonationCard(data: e))
-                                      .toList(),
+                              if (state is DonationLoading) {
+                                return Center(
+                                  child: SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: blueColor,
+                                      strokeWidth: 3,
+                                    ),
+                                  ),
                                 );
+                              }
+
+                              if (state is DonationAllSuccess) {
+                                if (state.data.isNotEmpty){
+                                  final length = state.data.length >= 5 ? 5 : state.data.length;
+                                  return Column(
+                                    children: state.data.sublist(0, length)
+                                        .map((e) => DonationCard(data: e))
+                                        .toList(),
+                                  );
+                                }else{
+                                  return Center(
+                                    child: Text("Belum ada donasi", style: thinGrayTextStyle.copyWith(
+                                        fontSize: 14, fontWeight: FontWeight.w700)),
+                                  );
+                                }
                               }
 
                               return Container();
@@ -237,7 +307,7 @@ class HomePage extends StatelessWidget {
 
                         /* info section */
                         const SizedBox(height: 27),
-                        Text("Donasi Terbaru",
+                        Text("Informasi Terbaru",
                             style: darkGrayTextStyle.copyWith(
                                 fontSize: 14, fontWeight: FontWeight.w700)),
                         const SizedBox(height: 13),
@@ -247,10 +317,21 @@ class HomePage extends StatelessWidget {
                           child: BlocBuilder<ContentBloc, ContentState>(
                             builder: (context, state) {
                               if (state is ContentSuccess) {
-                                return Column(
+
+                                if (state.contents.isNotEmpty){
+                                  return Column(
                                     children: state.contents
-                                        .map((e) => InfoCard(data: e))
-                                        .toList());
+                                      .map((e) => InfoCard(data: e)
+                                    )
+                                    .toList()
+                                  );
+                                }else{
+                                  return Center(
+                                    child: Text("Belum ada informasi", style: thinGrayTextStyle.copyWith(
+                                        fontSize: 14, fontWeight: FontWeight.w700)),
+                                  );
+                                }
+
                               }
 
                               return Container();
@@ -325,7 +406,9 @@ class PermitModal extends StatelessWidget {
             CustomButton(
               title: "Ajukan Perizinan",
               isOutline: true,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, "/permit-form");
+              },
             ),
             const SizedBox(height: 15),
             Text("Atau ?",
@@ -401,15 +484,19 @@ class _CreateDonationModalState extends State<CreateDonationModal> {
   bool isLoading = false;
 
   bool validated() {
-    if (uuidField.text.isEmpty){
+    if (uuidField.text.isEmpty) {
       return false;
-    }else{
+    } else {
       return true;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    void handleScan(String param) {
+      context.read<DonaturBloc>().add(FindDoatur(uuid: param));
+    }
+
     return Container(
       width: double.infinity,
       height: MediaQuery.of(context).size.height * 0.45,
@@ -438,18 +525,19 @@ class _CreateDonationModalState extends State<CreateDonationModal> {
                 if (state is DonaturFailed) {
                   customSnackbar(context, state.message);
                   setState(() {
-                      isLoading = false;
+                    isLoading = false;
                   });
                 }
 
-                if (state is DonaturFindSuccess){
-                    setState(() {
-                      isLoading = false;
-                    });
-                    Navigator.pushNamed(context, "/donasi-form", arguments: state.data);
+                if (state is DonaturFindSuccess) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                  Navigator.pushNamed(context, "/donasi-form",
+                      arguments: state.data);
                 }
 
-                if (state is DonaturLoading){
+                if (state is DonaturLoading) {
                   setState(() {
                     isLoading = true;
                   });
@@ -458,15 +546,16 @@ class _CreateDonationModalState extends State<CreateDonationModal> {
               child: CustomButton(
                   title: "Cari Donatur",
                   isLoading: isLoading,
-                  onPressed: (){
-                    if (!validated()){
+                  onPressed: () {
+                    if (!validated()) {
                       customSnackbar(context, "kode donatur wajib diisi");
-                    }else{
+                    } else {
                       // context.read<DonaturBloc>().add(FindDoatur(uuid: uuidField.text));
-                      context.read<DonaturBloc>().add(const FindDoatur(uuid: 'DNR-66f49d6ebf016'));
+                      context
+                          .read<DonaturBloc>()
+                          .add(FindDoatur(uuid: uuidField.text));
                     }
-                  }
-                ),
+                  }),
             ),
             const SizedBox(height: 15),
             Text(
@@ -475,20 +564,37 @@ class _CreateDonationModalState extends State<CreateDonationModal> {
                   fontSize: 14, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 15),
-            CustomButton(
-              title: "Scan Kode QR",
-              isOutline: true,
-              onPressed: () async {
-                String res = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ScannerScreen()));
+            BlocListener<DonaturBloc, DonaturState>(
+              listener: (context, state) {
+                if (state is DonaturFailed) {
+                  customSnackbar(context, state.message);
+                  setState(() {
+                    isLoading = false;
+                  });
+                }
 
-                if (res.isNotEmpty) {
-                  // ignore: use_build_context_synchronously
-                  Navigator.pushNamed(context, "/donasi-form", arguments: res);
+                if (state is DonaturFindSuccess) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                  Navigator.pushNamed(context, "/donasi-form",
+                      arguments: state.data);
                 }
               },
+              child: CustomButton(
+                title: "Scan Kode QR",
+                isOutline: true,
+                onPressed: () async {
+                  String res = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ScannerScreen()));
+
+                  if (res.isNotEmpty) {
+                    handleScan(res);
+                  }
+                },
+              ),
             )
           ],
         ),
@@ -504,6 +610,10 @@ class BottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void handleScan(String param) {
+      context.read<DonaturBloc>().add(FindDoatur(uuid: param));
+    }
+
     return SafeArea(
         child: Container(
       width: double.infinity,
@@ -555,29 +665,40 @@ class BottomNav extends StatelessWidget {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () async {
-                String res = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ScannerScreen()));
+            BlocListener<DonaturBloc, DonaturState>(
+              listener: (context, state) {
+                if (state is DonaturFindSuccess) {
+                  Navigator.pushNamed(context, "/donasi-form",
+                      arguments: state.data);
+                }
 
-                if (res.isNotEmpty) {
-                  // ignore: use_build_context_synchronously
-                  print("barcode $res");
-                  // Navigator.pushNamed(context, "/donasi-form", arguments: res);
+                if (state is DonaturFailed) {
+                  customSnackbar(context, state.message);
                 }
               },
-              child: Container(
-                width: 55,
-                height: 55,
-                decoration: BoxDecoration(
-                    color: blueColor, borderRadius: BorderRadius.circular(50)),
-                child: Center(
-                  child: Image.asset(
-                    "assets/ic_qr.png",
-                    width: 32,
-                    height: 32,
+              child: GestureDetector(
+                onTap: () async {
+                  String res = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ScannerScreen()));
+
+                  if (res.isNotEmpty) {
+                    handleScan(res);
+                  }
+                },
+                child: Container(
+                  width: 55,
+                  height: 55,
+                  decoration: BoxDecoration(
+                      color: blueColor,
+                      borderRadius: BorderRadius.circular(50)),
+                  child: Center(
+                    child: Image.asset(
+                      "assets/ic_qr.png",
+                      width: 32,
+                      height: 32,
+                    ),
                   ),
                 ),
               ),
@@ -639,61 +760,66 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      width: double.infinity,
-      height: 80,
-      decoration: BoxDecoration(
-        color: whiteColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: thinGrayColor),
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20)),
-              child: Image.network(
-                data.imageLink ?? "",
-                width: 142,
-                height: 80,
-                fit: BoxFit.cover,
-              )),
-          const SizedBox(width: 9),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 180,
-                child: Text(
-                  data.title ?? "",
-                  style: darkGrayTextStyle700.copyWith(
-                      fontSize: 13, fontWeight: FontWeight.w700),
-                  overflow: TextOverflow.clip,
-                  maxLines: 2,
-                ),
-              ),
-              Text("Published :  ${stringToDate(data.createdAt ?? '')}",
-                  style: grayTextStyle.copyWith(
-                      fontSize: 9, fontStyle: FontStyle.italic)),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Image.asset(
-                    "assets/ic_admin.png",
-                    width: 14,
-                    height: 14,
+    return GestureDetector(
+      onTap: (){
+        Navigator.pushNamed(context, "/content-detail", arguments: data);
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 15),
+        width: double.infinity,
+        height: 80,
+        decoration: BoxDecoration(
+          color: whiteColor,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: thinGrayColor),
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    bottomLeft: Radius.circular(20)),
+                child: Image.network(
+                  data.imageLink ?? "",
+                  width: 142,
+                  height: 80,
+                  fit: BoxFit.cover,
+                )),
+            const SizedBox(width: 9),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 180,
+                  child: Text(
+                    data.title ?? "",
+                    style: darkGrayTextStyle700.copyWith(
+                        fontSize: 13, fontWeight: FontWeight.w700),
+                    overflow: TextOverflow.clip,
+                    maxLines: 2,
                   ),
-                  const SizedBox(width: 3),
-                  Text("Admin",
-                      style: darkGrayTextStyle700.copyWith(fontSize: 9))
-                ],
-              )
-            ],
-          )
-        ],
+                ),
+                Text("Published :  ${stringToDate(data.createdAt ?? '')}",
+                    style: grayTextStyle.copyWith(
+                        fontSize: 9, fontStyle: FontStyle.italic)),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Image.asset(
+                      "assets/ic_admin.png",
+                      width: 14,
+                      height: 14,
+                    ),
+                    const SizedBox(width: 3),
+                    Text("Admin",
+                        style: darkGrayTextStyle700.copyWith(fontSize: 9))
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -819,13 +945,22 @@ class MenuItem extends StatelessWidget {
   }
 }
 
-class AmountSection extends StatelessWidget {
+class AmountSection extends StatefulWidget {
   const AmountSection({
     super.key,
   });
 
   @override
+  State<AmountSection> createState() => _AmountSectionState();
+}
+
+class _AmountSectionState extends State<AmountSection> {
+  @override
   Widget build(BuildContext context) {
+    void handleScan(String param) {
+      context.read<DonaturBloc>().add(FindDoatur(uuid: param));
+    }
+
     return Container(
       width: double.infinity,
       // height: 95,
@@ -842,8 +977,8 @@ class AmountSection extends StatelessWidget {
               children: [
                 Text("Perolehan Donasi Bulan ${getCurrentMonth()}",
                     style: grayTextStyle.copyWith(
-                        fontSize: 12, fontWeight: FontWeight.w600)),
-                const SizedBox(height: 5),
+                        fontSize: 11, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 3),
                 BlocProvider(
                   create: (context) => DonationBloc()..add(GetTotalDonation()),
                   child: BlocBuilder<DonationBloc, DonationState>(
@@ -853,18 +988,18 @@ class AmountSection extends StatelessWidget {
                             // number format idr
                             "${numberToIdr(int.parse(state.totalDonation.total ?? '0'))}",
                             style: darkGrayTextStyle700.copyWith(
-                              fontSize: 22,
+                              fontSize: 19,
                             ));
                       }
 
                       return Text("Rp. 0",
                           style: darkGrayTextStyle700.copyWith(
-                            fontSize: 22,
+                            fontSize: 18,
                           ));
                     },
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 2),
                 Text("Perolehan akan direset setiap bulannya",
                     style: greenTextStyle.copyWith(
                         fontSize: 9, fontWeight: FontWeight.w600)),
@@ -877,32 +1012,51 @@ class AmountSection extends StatelessWidget {
               color: thinGrayColor,
             ),
             const SizedBox(width: 25),
-            GestureDetector(
-              onTap: () async {
-                await ScanQr(context);
+            BlocListener<DonaturBloc, DonaturState>(
+              listener: (context, state) {
+                if (state is DonaturFindSuccess) {
+                  Navigator.pushNamed(context, "/donasi-form",
+                      arguments: state.data);
+                }
+
+                if (state is DonaturFailed) {
+                  customSnackbar(context, state.message);
+                }
               },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 45,
-                    height: 45,
-                    decoration: BoxDecoration(
-                        color: greenColor,
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Center(
-                      child: Image.asset(
-                        "assets/ic_qr.png",
-                        width: 30,
-                        height: 30,
+              child: GestureDetector(
+                onTap: () async {
+                  String res = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ScannerScreen()));
+
+                  if (res.isNotEmpty) {
+                    handleScan(res);
+                  }
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 45,
+                      height: 45,
+                      decoration: BoxDecoration(
+                          color: greenColor,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Center(
+                        child: Image.asset(
+                          "assets/ic_qr.png",
+                          width: 30,
+                          height: 30,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text("Scan QR",
-                      style: grayTextStyle.copyWith(
-                          fontSize: 12, fontWeight: FontWeight.w600))
-                ],
+                    const SizedBox(height: 2),
+                    Text("Scan QR",
+                        style: grayTextStyle.copyWith(
+                            fontSize: 12, fontWeight: FontWeight.w600))
+                  ],
+                ),
               ),
             )
           ],

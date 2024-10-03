@@ -38,4 +38,13 @@ class DonationAllSuccess extends DonationState {
   List<Object> get props => ['data'];
 }
 
+class DonationSuccess extends DonationState {
+  final DonationDataModel data;
+
+  const DonationSuccess(this.data);
+
+  @override
+  List<Object> get props => [data];
+}
+
 

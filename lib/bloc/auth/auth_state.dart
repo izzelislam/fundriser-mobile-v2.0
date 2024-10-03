@@ -27,3 +27,5 @@ final class AuthSuccess extends AuthState {
   List<Object> get props => [data];
 }
 
+final class AuthUpdatePassworSuccess extends AuthState {}
+

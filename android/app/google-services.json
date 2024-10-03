@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "85812761970",
+    "project_id": "fundriser-app",
+    "storage_bucket": "fundriser-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85812761970:android:39fb36e6acad42e20139eb",
+        "android_client_info": {
+          "package_name": "com.example.fundriser"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAL2fBnaoIAuqVWXV2RW0zVFK9z9GnlIck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,3 +1,7 @@
+import 'package:fundriser/model/location/district_model.dart';
+import 'package:fundriser/model/location/province_model.dart';
+import 'package:fundriser/model/location/regency_model.dart';
+
 class DonaturDataModel {
     final int? id;
     final String? teamId;
@@ -16,6 +20,10 @@ class DonaturDataModel {
     final String? updatedAt;
     final String? deletedAt;
     final String? qrUrl;
+    final ProvinceModel? province;
+    final RegencyModel? regency;
+    final DistrictModel? district;
+    final String? donationSumAmount;
 
     DonaturDataModel({
         this.id,
@@ -35,6 +43,10 @@ class DonaturDataModel {
         this.updatedAt,
         this.deletedAt,
         this.qrUrl,
+        this.province,
+        this.regency,
+        this.district,
+        this.donationSumAmount
     });
 
     factory DonaturDataModel.fromJson(Map<String, dynamic> json) => DonaturDataModel(
@@ -55,6 +67,10 @@ class DonaturDataModel {
         updatedAt: json["updated_at"],
         deletedAt: json["deleted_at"],
         qrUrl: json["qr_url"],
+        donationSumAmount: json["donations_sum_amount"],
+        province: json["province"] != null ? ProvinceModel.fromJson(json["province"]) : null,
+        regency: json["regency"] != null ? RegencyModel.fromJson(json["regency"]) : null,
+        district: json["district"] != null ? DistrictModel.fromJson(json["district"]) : null,
     );
 
     Map<String, dynamic> toJson() => {
