@@ -11,6 +11,15 @@ class DonasiDetailPage extends StatelessWidget {
 
     final DonationDataModel? data = ModalRoute.of(context)!.settings.arguments as DonationDataModel?;
 
+    String getAmount (param){
+      bool isInt = param is int;
+      if (isInt){
+        return numberToIdr(param);
+      }else{
+        return numberToIdr(int.parse(param));
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Detail Donasi", style: TextStyle(color: whiteColor),),
@@ -90,7 +99,7 @@ class DonasiDetailPage extends StatelessWidget {
                       fontWeight: FontWeight.w400
                     )),
                     const SizedBox(height: 20),
-                    Text(numberToIdr(int.parse(data.amount ?? '0')), style: darkGrayTextStyle700.copyWith(
+                    Text(getAmount(data.amount), style: darkGrayTextStyle700.copyWith(
                       fontSize: 26,
                     )),
                     const SizedBox(height: 20),

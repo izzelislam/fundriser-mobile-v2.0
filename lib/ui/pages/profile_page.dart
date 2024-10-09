@@ -49,49 +49,59 @@ class _ProfilePageState extends State<ProfilePage> {
                       onTap: () {
                         Navigator.pushNamed(context, "/change-password");
                       },
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            "assets/ic_change_passwor.png",
-                            width: 24,
-                            height: 24,
-                          ),
-                          const SizedBox(width: 12),
-                          Text("Ubah Password",
-                              style: darkGrayTextStyle.copyWith(
-                                  fontSize: 13, fontWeight: FontWeight.w700)),
-                          const Spacer(),
-                          Icon(
-                            Icons.chevron_right_outlined,
-                            color: darkGrayColor,
-                            size: 24,
-                          ),
-                        ],
+                      child: Container(
+                        color: whiteColor,
+                        width: double.infinity,
+                        height: 40,
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              "assets/ic_change_passwor.png",
+                              width: 24,
+                              height: 24,
+                            ),
+                            const SizedBox(width: 12),
+                            Text("Ubah Password",
+                                style: darkGrayTextStyle.copyWith(
+                                    fontSize: 13, fontWeight: FontWeight.w700)),
+                            const Spacer(),
+                            Icon(
+                              Icons.chevron_right_outlined,
+                              color: darkGrayColor,
+                              size: 24,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 17),
+                    // const SizedBox(height: 17),
                     GestureDetector(
                       onTap: () {
                         Navigator.pushNamed(context, "/about");
                       },
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            "assets/ic_about_app.png",
-                            width: 24,
-                            height: 24,
-                          ),
-                          const SizedBox(width: 12),
-                          Text("Tentang Aplikasi",
-                              style: darkGrayTextStyle.copyWith(
-                                  fontSize: 13, fontWeight: FontWeight.w700)),
-                          const Spacer(),
-                          Icon(
-                            Icons.chevron_right_outlined,
-                            color: darkGrayColor,
-                            size: 24,
-                          ),
-                        ],
+                      child: Container(
+                        color: whiteColor,
+                        width: double.infinity,
+                        height: 40,
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              "assets/ic_about_app.png",
+                              width: 24,
+                              height: 24,
+                            ),
+                            const SizedBox(width: 12),
+                            Text("Tentang Aplikasi",
+                                style: darkGrayTextStyle.copyWith(
+                                    fontSize: 13, fontWeight: FontWeight.w700)),
+                            const Spacer(),
+                            Icon(
+                              Icons.chevron_right_outlined,
+                              color: darkGrayColor,
+                              size: 24,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 17),

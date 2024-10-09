@@ -1,9 +1,9 @@
 class DonaturDetailModel {
     final int? id;
-    final String? teamId;
-    final String? provinceId;
-    final String? regencyId;
-    final String? districtId;
+    final int? teamId;
+    final int? provinceId;
+    final int? regencyId;
+    final int? districtId;
     final String? uuid;
     final String? qr;
     final String? name;
@@ -96,14 +96,14 @@ class District {
 
 class Donation {
     final int? id;
-    final String? donorId;
+    final int? donorId;
     final String? receiptUid;
     final String? recipient;
     final String? type;
-    final String? amount;
+    final int? amount;
     final String? note;
-    final DateTime? createdAt;
-    final DateTime? updatedAt;
+    final String? createdAt;
+    final String? updatedAt;
 
     Donation({
         this.id,
@@ -125,8 +125,8 @@ class Donation {
         type: json["type"],
         amount: json["amount"],
         note: json["note"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        createdAt:json["created_at"],
+        updatedAt:json["updated_at"],
     );
     
 }

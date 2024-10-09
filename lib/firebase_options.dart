@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAL2fBnaoIAuqVWXV2RW0zVFK9z9GnlIck',
-    appId: '1:85812761970:android:39fb36e6acad42e20139eb',
+    appId: '1:85812761970:android:0b81e80a3ee28b3b0139eb',
     messagingSenderId: '85812761970',
     projectId: 'fundriser-app',
     storageBucket: 'fundriser-app.appspot.com',
@@ -60,11 +60,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBlsj0uywhdkdy0x2gpQ7vBgR51UGgq_Xs',
-    appId: '1:85812761970:ios:f5d5b61ba20a4dca0139eb',
+    appId: '1:85812761970:ios:444d70ec673b2b520139eb',
     messagingSenderId: '85812761970',
     projectId: 'fundriser-app',
     storageBucket: 'fundriser-app.appspot.com',
-    iosBundleId: 'com.example.fundriser',
+    iosBundleId: 'com.fundriser.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

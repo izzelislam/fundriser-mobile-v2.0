@@ -1,4 +1,4 @@
-package com.example.fundriser
+package com.fundriser.app
 
 import io.flutter.embedding.android.FlutterActivity
 

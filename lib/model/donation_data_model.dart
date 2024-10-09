@@ -3,7 +3,7 @@ class DonationDataModel {
     final String? receiptUid;
     final String? recipient;
     final String? type;
-    final String? amount;
+    final dynamic amount;
     final String? note;
     final String? createdAt;
     final String? updatedAt;
@@ -48,10 +48,10 @@ class DonationDataModel {
 
 class Donor {
     final int? id;
-    final String? teamId;
-    final String? provinceId;
-    final String? regencyId;
-    final String? districtId;
+    final int? teamId;
+    final int? provinceId;
+    final int? regencyId;
+    final int? districtId;
     final String? uuid;
     final String? qr;
     final String? name;

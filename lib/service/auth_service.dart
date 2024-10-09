@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService{
-  Future<LoginSuccess> login(LoginModel data) async {
+  Future login(LoginModel data) async {
     try {
       Uri url = Uri.parse('$baseUrl/login');
       final res = await http.post(url, body: data.toJson());

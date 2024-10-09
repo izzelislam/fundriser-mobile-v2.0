@@ -31,15 +31,6 @@ class _DonasiPageState extends State<DonasiPage> {
       appBar: AppBar(
         title: const Text("Donasi"),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, "/donasi-form"),
-        backgroundColor: blueColor,
-        child: Image.asset(
-          "assets/ic_add.png",
-          width: 30,
-          height: 30,
-        ),
-      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView(
@@ -258,7 +249,7 @@ class DonationCard extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                Text(numberToIdr(int.parse(data.amount ?? '0')),
+                Text(numberToIdr(data.amount ?? 0),
                     style: darkGrayTextStyle700.copyWith(
                         fontSize: 14, fontWeight: FontWeight.w500))
               ],

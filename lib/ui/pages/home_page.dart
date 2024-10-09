@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _initializeFirebaseMessaging() async {
     FirebaseMessaging.instance.getToken().then((token) {
-      // print("FCM Token: $token");
+      print("FCM Token: $token");
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -70,283 +70,314 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
         backgroundColor: blueColor,
         bottomNavigationBar: const BottomNav(),
-        body: Column(
-          children: [
-            /* header section */
-            const SizedBox(
-              height: 45,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(children: [
-                BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    if (state is AuthSuccess) {
-                      return Container(
-                        width: 133,
-                        height: 44,
-                        decoration: BoxDecoration(
-                            color: whiteColor,
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 15,
-                                backgroundImage: NetworkImage( state.data.imageUrl ?? 'Guest'),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  state.data.imageUrl ?? 'Guest',
-                                  style: grayTextStyle.copyWith(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
+        body: SizedBox(
+          width: double.infinity,
+          height: size.height,
+          child: Stack(
+            children: [
+
+              /* header section */
+              Positioned(
+                // bottom status bar 20 px
+                top: size.height * 0.05,
+                child: SizedBox(
+                  width: size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(children: [
+                      BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, state) {
+                          if (state is AuthSuccess) {
+                            return Container(
+                              width: 120,
+                              height: 38,
+                              decoration: BoxDecoration(
+                                  color: whiteColor,
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 3, vertical: 5
                                 ),
-                              )
-                            ],
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 15,
+                                      backgroundImage: NetworkImage( state.data.imageUrl ?? 'Guest'),
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        state.data.name ?? 'Guest',
+                                        style: grayTextStyle.copyWith(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                            
+                          return Container();
+                        },
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, "/notif"),
+                        child: Container(
+                          width: 31,
+                          height: 31,
+                          decoration: BoxDecoration(
+                              color: whiteColor,
+                              borderRadius: BorderRadius.circular(50)),
+                          child: Center(
+                            child: Image.asset(
+                              "assets/ic_bell.png",
+                              width: 19,
+                              height: 19,
+                            ),
                           ),
                         ),
-                      );
-                    }
-
-                    return Container();
-                  },
+                      )
+                    ]),
+                  ),
                 ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, "/notif"),
-                  child: Container(
-                    width: 31,
-                    height: 31,
-                    decoration: BoxDecoration(
-                        color: whiteColor,
-                        borderRadius: BorderRadius.circular(50)),
-                    child: Center(
-                      child: Image.asset(
-                        "assets/ic_bell.png",
-                        width: 19,
-                        height: 19,
+              ),
+              /* end header section */
+          
+              /* quote section */
+              Positioned(
+                top: size.height * 0.14,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Text("“Selalu bersholawat agar mendapat syafaat”",
+                      style: whiteTextStyle.copyWith(
+                          fontSize: 12, fontWeight: FontWeight.w500)),
+                ),
+              ),
+              /* end quote sction */
+          
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.72,
+                  decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(35),
+                          topRight: Radius.circular(35))),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 20,
+                      right: 20,
+                    ),
+                    child: RefreshIndicator(
+                      color: blueColor,
+                      onRefresh: () async {
+                        BlocProvider.of<DonationBloc>(context).add(const GetAllDonation());
+                        BlocProvider.of<ContentBloc>(context).add(GetAllcontent());
+                        BlocProvider.of<AuthBloc>(context).add(AuthGetProfile());
+                      },
+                      child: ListView(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /* amount section */
+                              const AmountSection(),
+                              /*emd amount section */
+                      
+                              /* menu section */
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  MenuItem(
+                                      title: "Buat Donasi",
+                                      color: greenColor,
+                                      image: "assets/ic_donasi.png",
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) =>
+                                                CreateDonationModal());
+                                      }),
+                                  MenuItem(
+                                      title: "Donasi",
+                                      color: blueColor,
+                                      image: "assets/ic_donasi_list.png",
+                                      onTap: () {
+                                        Navigator.pushNamed(context, "/donasi");
+                                      }),
+                                  MenuItem(
+                                      title: "Buat Donatur",
+                                      color: greenColor,
+                                      image: "assets/ic_donatur.png",
+                                      onTap: () {
+                                        Navigator.pushNamed(context, "/donatur-form");
+                                      }),
+                                  MenuItem(
+                                      title: "Donatur",
+                                      color: blueColor,
+                                      image: "assets/ic_donatur_list.png",
+                                      onTap: () {
+                                        Navigator.pushNamed(context, "/donatur");
+                                      }),
+                                ],
+                              ),
+                              const SizedBox(height: 29),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  MenuItem(
+                                      title: "Absensi",
+                                      color: greenColor,
+                                      image: "assets/ic_present.png",
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) =>
+                                                const AbsensiModal());
+                                      }),
+                                  MenuItem(
+                                      title: "Izin",
+                                      color: orangeColor,
+                                      image: "assets/ic_permit.png",
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) =>
+                                                const PermitModal());
+                                      }),
+                                  MenuItem(
+                                      title: "Rekap",
+                                      color: greenColor,
+                                      image: "assets/ic_rekap.png",
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) =>
+                                                const CominSoonModal());
+                                      }),
+                                  MenuItem(
+                                      title: "Riwayat",
+                                      color: grayColor,
+                                      image: "assets/ic_riwayat.png",
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) =>
+                                                const CominSoonModal());
+                                      }),
+                                ],
+                              ),
+                              /*end menu section */
+                      
+                              /* donation section */
+                              const SizedBox(height: 49),
+                              Text("Donasi Terbaru",
+                                  style: darkGrayTextStyle.copyWith(
+                                      fontSize: 14, fontWeight: FontWeight.w700)),
+                              const SizedBox(height: 17),
+                              BlocProvider(
+                                create: (context) =>
+                                    DonationBloc()..add(GetAllDonation()),
+                                child: BlocBuilder<DonationBloc, DonationState>(
+                                  builder: (context, state) {
+                                    if (state is DonationLoading) {
+                                      return Center(
+                                        child: SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: blueColor,
+                                            strokeWidth: 3,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                      
+                                    if (state is DonationAllSuccess) {
+                                      if (state.data.isNotEmpty){
+                                        final length = state.data.length >= 5 ? 5 : state.data.length;
+                                        return Column(
+                                          children: state.data.sublist(0, length)
+                                              .map((e) => DonationCard(data: e))
+                                              .toList(),
+                                        );
+                                      }else{
+                                        return Center(
+                                          child: Text("Belum ada donasi", style: thinGrayTextStyle.copyWith(
+                                              fontSize: 14, fontWeight: FontWeight.w700)),
+                                        );
+                                      }
+                                    }
+                      
+                                    return Container();
+                                  },
+                                ),
+                              ),
+                      
+                              /* end donation section */
+                      
+                              /* info section */
+                              const SizedBox(height: 27),
+                              Text("Informasi Terbaru",
+                                  style: darkGrayTextStyle.copyWith(
+                                      fontSize: 14, fontWeight: FontWeight.w700)),
+                              const SizedBox(height: 13),
+                              BlocProvider(
+                                create: (context) =>
+                                    ContentBloc()..add(GetAllcontent()),
+                                child: BlocBuilder<ContentBloc, ContentState>(
+                                  builder: (context, state) {
+                                    if (state is ContentSuccess) {
+                      
+                                      if (state.contents.isNotEmpty){
+                                        return Column(
+                                          children: state.contents
+                                            .map((e) => InfoCard(data: e)
+                                          )
+                                          .toList()
+                                        );
+                                      }else{
+                                        return Center(
+                                          child: Text("Belum ada informasi", style: thinGrayTextStyle.copyWith(
+                                              fontSize: 14, fontWeight: FontWeight.w700)),
+                                        );
+                                      }
+                      
+                                    }
+                      
+                                    return Container();
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              /* end section */
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                )
-              ]),
-            ),
-            /* end header section */
-
-            /* quote section */
-            const SizedBox(height: 37),
-            Text("“Selalu bersholawat agar mendapat syafaat”",
-                style: whiteTextStyle.copyWith(
-                    fontSize: 12, fontWeight: FontWeight.w500)),
-            const SizedBox(height: 17),
-            /* end quote sction */
-
-            Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.72,
-              decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(35),
-                      topRight: Radius.circular(35))),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
                 ),
-                child: ListView(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /* amount section */
-                        const AmountSection(),
-                        /*emd amount section */
-
-                        /* menu section */
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            MenuItem(
-                                title: "Buat Donasi",
-                                color: greenColor,
-                                image: "assets/ic_donasi.png",
-                                onTap: () {
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) =>
-                                          CreateDonationModal());
-                                }),
-                            MenuItem(
-                                title: "Donasi",
-                                color: blueColor,
-                                image: "assets/ic_donasi_list.png",
-                                onTap: () {
-                                  Navigator.pushNamed(context, "/donasi");
-                                }),
-                            MenuItem(
-                                title: "Buat Donatur",
-                                color: greenColor,
-                                image: "assets/ic_donatur.png",
-                                onTap: () {
-                                  Navigator.pushNamed(context, "/donatur-form");
-                                }),
-                            MenuItem(
-                                title: "Donatur",
-                                color: blueColor,
-                                image: "assets/ic_donatur_list.png",
-                                onTap: () {
-                                  Navigator.pushNamed(context, "/donatur");
-                                }),
-                          ],
-                        ),
-                        const SizedBox(height: 29),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            MenuItem(
-                                title: "Absensi",
-                                color: greenColor,
-                                image: "assets/ic_present.png",
-                                onTap: () {
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) =>
-                                          const AbsensiModal());
-                                }),
-                            MenuItem(
-                                title: "Izin",
-                                color: orangeColor,
-                                image: "assets/ic_permit.png",
-                                onTap: () {
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) =>
-                                          const PermitModal());
-                                }),
-                            MenuItem(
-                                title: "Rekap",
-                                color: greenColor,
-                                image: "assets/ic_rekap.png",
-                                onTap: () {
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) =>
-                                          const CominSoonModal());
-                                }),
-                            MenuItem(
-                                title: "Riwayat",
-                                color: grayColor,
-                                image: "assets/ic_riwayat.png",
-                                onTap: () {
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) =>
-                                          const CominSoonModal());
-                                }),
-                          ],
-                        ),
-                        /*end menu section */
-
-                        /* donation section */
-                        const SizedBox(height: 49),
-                        Text("Donasi Terbaru",
-                            style: darkGrayTextStyle.copyWith(
-                                fontSize: 14, fontWeight: FontWeight.w700)),
-                        const SizedBox(height: 17),
-                        BlocProvider(
-                          create: (context) =>
-                              DonationBloc()..add(GetAllDonation()),
-                          child: BlocBuilder<DonationBloc, DonationState>(
-                            builder: (context, state) {
-                              if (state is DonationLoading) {
-                                return Center(
-                                  child: SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: blueColor,
-                                      strokeWidth: 3,
-                                    ),
-                                  ),
-                                );
-                              }
-
-                              if (state is DonationAllSuccess) {
-                                if (state.data.isNotEmpty){
-                                  final length = state.data.length >= 5 ? 5 : state.data.length;
-                                  return Column(
-                                    children: state.data.sublist(0, length)
-                                        .map((e) => DonationCard(data: e))
-                                        .toList(),
-                                  );
-                                }else{
-                                  return Center(
-                                    child: Text("Belum ada donasi", style: thinGrayTextStyle.copyWith(
-                                        fontSize: 14, fontWeight: FontWeight.w700)),
-                                  );
-                                }
-                              }
-
-                              return Container();
-                            },
-                          ),
-                        ),
-
-                        /* end donation section */
-
-                        /* info section */
-                        const SizedBox(height: 27),
-                        Text("Informasi Terbaru",
-                            style: darkGrayTextStyle.copyWith(
-                                fontSize: 14, fontWeight: FontWeight.w700)),
-                        const SizedBox(height: 13),
-                        BlocProvider(
-                          create: (context) =>
-                              ContentBloc()..add(GetAllcontent()),
-                          child: BlocBuilder<ContentBloc, ContentState>(
-                            builder: (context, state) {
-                              if (state is ContentSuccess) {
-
-                                if (state.contents.isNotEmpty){
-                                  return Column(
-                                    children: state.contents
-                                      .map((e) => InfoCard(data: e)
-                                    )
-                                    .toList()
-                                  );
-                                }else{
-                                  return Center(
-                                    child: Text("Belum ada informasi", style: thinGrayTextStyle.copyWith(
-                                        fontSize: 14, fontWeight: FontWeight.w700)),
-                                  );
-                                }
-
-                              }
-
-                              return Container();
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        /* end section */
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ));
   }
 }
@@ -780,7 +811,7 @@ class InfoCard extends StatelessWidget {
                     topLeft: Radius.circular(20),
                     bottomLeft: Radius.circular(20)),
                 child: Image.network(
-                  data.imageLink ?? "",
+                  data.imageLink ?? "https://alkuwaiti.com/wp-content/uploads/2020/05/Image-Placeholder-Dark.png",
                   width: 142,
                   height: 80,
                   fit: BoxFit.cover,
@@ -893,7 +924,7 @@ class DonationCard extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                Text(numberToIdr(int.parse(data.amount ?? '0')),
+                Text(numberToIdr(data.amount ?? 0),
                     style: darkGrayTextStyle700.copyWith(
                         fontSize: 14, fontWeight: FontWeight.w500))
               ],

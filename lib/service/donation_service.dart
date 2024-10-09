@@ -41,7 +41,6 @@ class DonationService {
 
         final res = await http.get(url, headers: headers);
 
-
         if (res.statusCode == 200) {
           return List<DonationDataModel>.from(jsonDecode(res.body)["data"]["data"].map((x) => DonationDataModel.fromJson(x)));
         }else{
@@ -61,7 +60,9 @@ class DonationService {
           'Authorization': 'Bearer $token',
         };
 
+
         final res = await http.post(url, headers: headers, body: data.toJson());
+        print(jsonDecode(res.body)["data"]);
         if (res.statusCode == 200) {
           return DonationDataModel.fromJson(jsonDecode(res.body)["data"]);
         }else{
@@ -69,6 +70,7 @@ class DonationService {
         }
 
       } catch (e) {
+        print("error $e");
         rethrow;
       }
     }

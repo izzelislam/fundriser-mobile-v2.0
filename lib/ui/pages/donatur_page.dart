@@ -4,6 +4,7 @@ import 'package:fundriser/bloc/donatur/donatur_bloc.dart';
 import 'package:fundriser/model/donatur/donatur_data_model.dart';
 import 'package:fundriser/shared/method.dart';
 import 'package:fundriser/shared/theme.dart';
+import 'package:fundriser/ui/pages/donatur_form_page.dart';
 import 'package:fundriser/ui/widgets/custom_input.dart';
 
 class DonaturPage extends StatefulWidget {
@@ -22,6 +23,7 @@ class _DonaturPageState extends State<DonaturPage> {
   @override
   void initState() {
     super.initState();
+    donatur = [];
     context.read<DonaturBloc>().add(const GetAllDonatur());
   }
 
@@ -65,11 +67,22 @@ class _DonaturPageState extends State<DonaturPage> {
                 loading = false;
               });
             }
+
+            if (state is DonaturSuccess) {
+              setState(() {
+                loading = false;
+              });
+              context.read<DonaturBloc>().add(GetAllDonatur(page: currentPage.toString()));
+            }
             
             if (state is DonaturAllSuccess){
               setState(() {
                 // donatur = List.from(state.data!);
-                donatur.addAll(state.data!);
+                if (currentPage > 1){
+                  donatur.addAll(state.data!);
+                }else{
+                  donatur = List.from(state.data!);
+                }
                 loading = false;
               });
             }
@@ -111,6 +124,8 @@ class _DonaturPageState extends State<DonaturPage> {
                       ),
                     ], 
                     
+                    
+
                     if (state is DonaturAllSuccess) ...[
                       if (state.data!.isNotEmpty) ...[
                         Column(
@@ -124,6 +139,7 @@ class _DonaturPageState extends State<DonaturPage> {
                         ),
                       ]
                     ],
+
                     
                     const SizedBox(
                       height: 20,
@@ -209,7 +225,7 @@ class DonaturCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          "Donasi Dari",
+                          "donatur",
                           style: grayTextStyle.copyWith(
                               fontSize: 12, fontWeight: FontWeight.w700),
                         ),
@@ -244,7 +260,12 @@ class DonaturCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        // Navigator.pushNamed(context, "/donatur-form", arguments: data);
+                        Navigator.push(context, 
+                          MaterialPageRoute(builder: (context) => DonaturFormPage(data: data)),
+                        );
+                      },
                       child: Image.asset(
                         "assets/ic_edit.png",
                         width: 20,
@@ -255,7 +276,9 @@ class DonaturCard extends StatelessWidget {
                       width: 10,
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        context.read<DonaturBloc>().add(DeleteDonatur(uuid: data?.id.toString() ?? ""));
+                      },
                       child: Image.asset(
                         "assets/ic_delete.png",
                         width: 23,

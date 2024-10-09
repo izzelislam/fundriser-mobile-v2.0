@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:85812761970:android:39fb36e6acad42e20139eb",
+        "mobilesdk_app_id": "1:85812761970:android:0b81e80a3ee28b3b0139eb",
         "android_client_info": {
-          "package_name": "com.example.fundriser"
+          "package_name": "com.fundriser.app"
         }
       },
       "oauth_client": [],

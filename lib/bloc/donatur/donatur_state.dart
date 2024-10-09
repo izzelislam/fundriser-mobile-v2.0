@@ -37,3 +37,5 @@ class DonaturAllSuccess extends DonaturState {
   @override
   List<Object> get props => [data!];
 }
+
+class DonaturSuccess extends DonaturState {}
