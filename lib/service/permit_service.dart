@@ -23,6 +23,7 @@ class PermitService {
         throw jsonDecode(res.body)["message"];
       }
     } catch (e) {
+      print('error di permit service  $e');
       rethrow;
     }
 
@@ -41,6 +42,7 @@ class PermitService {
         throw jsonDecode(res.body)["message"];
       }
     } catch (e) {
+      print('error di permit service 1 $e');
       rethrow;
     }
   }
@@ -58,6 +60,7 @@ class PermitService {
         throw jsonDecode(res.body)["message"] ?? jsonDecode(res.body)["error"];
       }
     } catch (e) {
+      print('error di permit service 2 $e');
       rethrow;
     }
   }
@@ -74,6 +77,7 @@ class PermitService {
         throw jsonDecode(res.body)["message"];
       }
     } catch (e) {
+      print('error di permit service 3 $e');
       rethrow;
     }
   }
@@ -86,6 +90,7 @@ class PermitService {
       };
       return headers;
     } catch (e) {
+      print('error di permit service 4 $e');
       rethrow;
     }
   }

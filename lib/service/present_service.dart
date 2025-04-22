@@ -22,6 +22,7 @@ class PresentService {
         throw jsonDecode(res.body)["message"];
       }
     } catch (e) {
+      print('error di present service  $e');
       rethrow;
     }
   }
@@ -40,6 +41,7 @@ class PresentService {
         throw jsonDecode(res.body)["message"];
       }
     } catch (e) {
+       print('error di present service 1  $e');
       rethrow;
     }
   }
@@ -56,6 +58,7 @@ class PresentService {
         throw jsonDecode(res.body)["message"];
       }
     } catch (e) {
+       print('error di present service 2 $e');
       rethrow;
     }
   }
@@ -74,6 +77,7 @@ class PresentService {
         throw jsonDecode(res.body)["message"];
       }
     } catch (e) {
+       print('error di present service 3 $e');
       rethrow;
     }
   }
@@ -86,6 +90,7 @@ class PresentService {
       };
       return headers;
     } catch (e) {
+       print('error di present service 4 $e');
       rethrow;
     }
   }

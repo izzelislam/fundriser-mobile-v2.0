@@ -21,6 +21,7 @@ class AuthService{
       }
 
     } catch (e) {
+      print('error di login service $e');
       rethrow;
     }
   }
@@ -30,6 +31,7 @@ class AuthService{
       const storage = FlutterSecureStorage();
       await storage.write(key: "token", value: token);
     } catch (e) {
+      print('error di login service 2 $e');
       rethrow;
     }
   }
@@ -39,6 +41,7 @@ class AuthService{
       const storage = FlutterSecureStorage();
       return await storage.read(key: "token");
     } catch (e) {
+      print('error di login service 3$e');
       rethrow;
     }
   }
@@ -66,6 +69,7 @@ class AuthService{
       }
 
     } catch (e) {
+      print('error di login service 4 $e');
       rethrow;
     }
   }
@@ -88,6 +92,7 @@ class AuthService{
       }
 
     } catch (e) {
+      print('error di login service 5 $e');
       rethrow;
     }
   }
@@ -97,6 +102,7 @@ class AuthService{
       const storage = FlutterSecureStorage();
       await storage.delete(key: "token");
     } catch (e) {
+      print('error di login service 6 $e');
       rethrow;
     }
   }
@@ -120,6 +126,7 @@ class AuthService{
       }
 
     } catch (e) {
+      print('error di login service 7 $e');
       rethrow;
     }
   }

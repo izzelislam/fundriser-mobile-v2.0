@@ -118,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                   CustomInput(
                     label: "No. Handphone",
                     controller: phoneController,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     hintText: "Masukkan no hp anda",
                   ),
                   CustomInput(

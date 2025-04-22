@@ -26,6 +26,7 @@ class DonationService {
           throw 'Gagal Get Total Donation';
         }
       } catch (e) {
+        print('error di donation service $e');
         rethrow;
       }
     }
@@ -47,6 +48,8 @@ class DonationService {
           throw 'Gagal Get Donation Data';
         }
       } catch (e) {
+        print('error di donation service 1 $e');
+
         rethrow;
       }
     }
@@ -70,7 +73,8 @@ class DonationService {
         }
 
       } catch (e) {
-        print("error $e");
+                print('error di donation service 2 $e');
+
         rethrow;
       }
     }
@@ -92,6 +96,8 @@ class DonationService {
           throw 'Gagal Get Donation Data';
         }
       } catch (e) {
+                print('error di donation service 3 $e');
+
         rethrow;
       }
     }

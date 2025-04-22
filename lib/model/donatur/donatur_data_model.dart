@@ -4,10 +4,10 @@ import 'package:fundriser/model/location/regency_model.dart';
 
 class DonaturDataModel {
     final int? id;
-    final int? teamId;
-    final int? provinceId;
-    final int? regencyId;
-    final int? districtId;
+    final String? teamId;
+    final String? provinceId;
+    final String? regencyId;
+    final String? districtId;
     final String? uuid;
     final String? qr;
     final String? name;

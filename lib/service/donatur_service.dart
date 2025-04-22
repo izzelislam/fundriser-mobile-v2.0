@@ -26,6 +26,7 @@ class DonaturService {
       }
 
     } catch (e) {
+      print('error di donaturrr service  $e');
       rethrow;
     }
   }
@@ -47,6 +48,7 @@ class DonaturService {
       }
 
     } catch (e) {
+      print('error di donaturrr service 1  $e');
       rethrow;
     }
   }
@@ -68,6 +70,7 @@ class DonaturService {
       }
 
     } catch (e) {
+      print('error di donaturrr service 3 $e');
       rethrow;
     }
   }
@@ -89,6 +92,7 @@ class DonaturService {
       }
 
     } catch (e) {
+      print('error di donaturrr service 4 $e');
       rethrow;
     }
   }
@@ -110,6 +114,7 @@ class DonaturService {
       }
 
     } catch (e) {
+      print('error di donaturrr service 5 $e');
       rethrow;
     }
   } 

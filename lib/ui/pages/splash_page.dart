@@ -42,12 +42,12 @@ class SplashPage extends StatelessWidget {
                 //   style:
                 //       whiteTextStyle.copyWith(fontSize: 20, fontWeight: semiBold),
                 // )
-                Text(
-                  "emha",
-                  style:
-                      grayTextStyle.copyWith(fontSize: 20, fontWeight: semiBold),
-                ),
-                Spacer(),
+                // Text(
+                //   "LAZNUHA",
+                //   style:
+                //       grayTextStyle.copyWith(fontSize: 20, fontWeight: semiBold),
+                // ),
+                const Spacer(),
                 Text(
                     "version 2.0.0",
                     style:

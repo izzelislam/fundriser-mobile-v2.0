@@ -24,7 +24,7 @@ class LoginSuccess {
 
 class User {
     int? id;
-    int? teamId;
+    String? teamId;
     String? name;
     String? image;
     String? email;

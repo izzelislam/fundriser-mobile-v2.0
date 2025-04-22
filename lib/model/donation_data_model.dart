@@ -48,10 +48,10 @@ class DonationDataModel {
 
 class Donor {
     final int? id;
-    final int? teamId;
-    final int? provinceId;
-    final int? regencyId;
-    final int? districtId;
+    final String? teamId;
+    final String? provinceId;
+    final String? regencyId;
+    final String? districtId;
     final String? uuid;
     final String? qr;
     final String? name;

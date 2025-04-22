@@ -1,6 +1,6 @@
 class ProfileModel {
     int? id;
-    int? teamId;
+    String? teamId;
     String? name;
     String? image;
     String? email;
@@ -50,7 +50,7 @@ class ProfileModel {
 
     Map<String, dynamic> toJson() => {
         "id": id ?? '',
-        "team_id": teamId ?? '',
+        "team_id": teamId ?? 0,
         "name": name ?? '',
         "image": image ?? '',
         "email": email ?? '',

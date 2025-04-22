@@ -24,6 +24,7 @@ class ContentService{
         }
 
     } catch (e) {
+      print('error di content service $e');
       rethrow;
     }
   }

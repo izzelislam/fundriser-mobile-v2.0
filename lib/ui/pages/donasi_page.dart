@@ -249,7 +249,7 @@ class DonationCard extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                Text(numberToIdr(data.amount ?? 0),
+                Text(numberToIdr(int.parse(data.amount)),
                     style: darkGrayTextStyle700.copyWith(
                         fontSize: 14, fontWeight: FontWeight.w500))
               ],

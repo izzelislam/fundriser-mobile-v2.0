@@ -22,6 +22,7 @@ class LocationService{
       }
 
     } catch (e) {
+      print('error di location service  $e');
       rethrow;
     }
   }
@@ -39,6 +40,7 @@ class LocationService{
         throw "Gagal Get Province";
       }
     } catch (e) {
+      print('error di location service 1 $e');
       rethrow;
     }
   }
@@ -56,6 +58,7 @@ class LocationService{
         throw "Gagal Get Province";
       }
     } catch (e) {
+      print('error di location service 2 $e');
       rethrow;
     }
   }
@@ -68,6 +71,7 @@ class LocationService{
       };
       return headers;
     } catch (e) {
+      print('error di location service 3 $e');
       rethrow;
     }
   }
