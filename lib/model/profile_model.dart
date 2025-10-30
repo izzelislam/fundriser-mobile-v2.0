@@ -1,6 +1,6 @@
 class ProfileModel {
     int? id;
-    String? teamId;
+    int? teamId;
     String? name;
     String? image;
     String? email;

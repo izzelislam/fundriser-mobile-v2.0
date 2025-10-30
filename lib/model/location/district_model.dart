@@ -1,7 +1,7 @@
 class DistrictModel {
     final int? id;
     final String? name;
-    final String? regencyId;
+    final int? regencyId;
 
     DistrictModel({
         this.id,

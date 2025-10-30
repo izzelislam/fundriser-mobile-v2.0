@@ -1,7 +1,7 @@
 class RegencyModel {
     final int? id;
     final String? name;
-    final String? provinceId;
+    final int? provinceId;
 
     RegencyModel({
         this.id,

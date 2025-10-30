@@ -1,9 +1,9 @@
 class DonaturDetailModel {
     final int? id;
-    final String? teamId;
-    final String? provinceId;
-    final String? regencyId;
-    final String? districtId;
+    final int? teamId;
+    final int? provinceId;
+    final int? regencyId;
+    final int? districtId;
     final String? uuid;
     final String? qr;
     final String? name;
@@ -78,7 +78,7 @@ class DonaturDetailModel {
 
 class District {
     final int? id;
-    final String? regencyId;
+    final int? regencyId;
     final String? name;
 
     District({
@@ -148,7 +148,7 @@ class Province {
 
 class Regency {
     final int? id;
-    final String? provinceId;
+    final int? provinceId;
     final String? name;
 
     Regency({
